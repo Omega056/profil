@@ -76,14 +76,14 @@
                     </Grid.ColumnDefinitions>
                     <Ellipse Width="60" Height="60" Fill="#C0C0C0"/>
                     <StackPanel Grid.Column="1" Margin="10,0,0,0">
-                        <TextBlock Text="Студент" FontWeight="Bold" FontSize="16" Foreground="#222222"/>
+                        <TextBlock x:Name="ProfileUsernameTextBlock" Text="Студент" FontWeight="Bold" FontSize="16" Foreground="#222222"/>
                         <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
                             <TextBlock Text="IQ: " FontWeight="SemiBold" Foreground="#555"/>
-                            <TextBlock Text="100" Foreground="#555"/>
+                            <TextBlock x:Name="ProfileIQTextBlock" Text="100" Foreground="#555"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
                             <TextBlock Text="Правильных ответов: " FontWeight="SemiBold" Foreground="#555"/>
-                            <TextBlock Text="0%" Foreground="#555"/>
+                            <TextBlock x:Name="ProfileCorrectAnswersTextBlock" Text="0%" Foreground="#555"/>
                         </StackPanel>
                     </StackPanel>
                 </Grid>

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Data.Sqlite;
+using WpfApp14.Models;
 
 namespace WpfApp14.Services
 {
@@ -25,6 +26,18 @@ namespace WpfApp14.Services
 
             using var cmd = _connection.CreateCommand();
 
+            // Create Users table with Password field
+            // Note: Username is TEXT NOT NULL with no unique constraint, allowing unlimited changes
+            cmd.CommandText = @"CREATE TABLE IF NOT EXISTS Users (
+                Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                Username TEXT NOT NULL,
+                Password TEXT NOT NULL,
+                IQ INTEGER NOT NULL,
+                CorrectAnswerPercentage REAL NOT NULL
+            );";
+            cmd.ExecuteNonQuery();
+
+            // Create Quizzes table
             cmd.CommandText = @"CREATE TABLE IF NOT EXISTS Quizzes (
                 Id INTEGER PRIMARY KEY AUTOINCREMENT,
                 Title TEXT NOT NULL
@@ -48,6 +61,67 @@ namespace WpfApp14.Services
                 FOREIGN KEY(QuestionId) REFERENCES Questions(Id)
             );";
             cmd.ExecuteNonQuery();
+        }
+
+        public static int InsertOrUpdateUser(User user)
+        {
+            if (_connection == null) throw new InvalidOperationException("DB not initialized");
+
+            using var tx = _connection.BeginTransaction();
+            using var cmd = _connection.CreateCommand();
+            cmd.Transaction = tx;
+
+            if (user.Id == 0) // New user
+            {
+                cmd.CommandText = @"INSERT INTO Users (Username, Password, IQ, CorrectAnswerPercentage)
+                    VALUES ($username, $password, $iq, $percentage);";
+                cmd.Parameters.AddWithValue("$username", user.Username);
+                cmd.Parameters.AddWithValue("$password", user.Password ?? string.Empty);
+                cmd.Parameters.AddWithValue("$iq", user.IQ);
+                cmd.Parameters.AddWithValue("$percentage", user.CorrectAnswerPercentage);
+                cmd.ExecuteNonQuery();
+
+                cmd.CommandText = "SELECT last_insert_rowid();";
+                user.Id = (int)(long)cmd.ExecuteScalar()!;
+            }
+            else // Update existing user
+            {
+                cmd.CommandText = @"UPDATE Users
+                    SET Username = $username, Password = $password, IQ = $iq, CorrectAnswerPercentage = $percentage
+                    WHERE Id = $id;";
+                cmd.Parameters.AddWithValue("$id", user.Id);
+                cmd.Parameters.AddWithValue("$username", user.Username);
+                cmd.Parameters.AddWithValue("$password", user.Password ?? string.Empty);
+                cmd.Parameters.AddWithValue("$iq", user.IQ);
+                cmd.Parameters.AddWithValue("$percentage", user.CorrectAnswerPercentage);
+                cmd.ExecuteNonQuery();
+            }
+
+            tx.Commit();
+            return user.Id;
+        }
+
+        public static User? GetUser(int userId)
+        {
+            if (_connection == null) throw new InvalidOperationException("DB not initialized");
+
+            using var cmd = _connection.CreateCommand();
+            cmd.CommandText = "SELECT Id, Username, Password, IQ, CorrectAnswerPercentage FROM Users WHERE Id = $id;";
+            cmd.Parameters.AddWithValue("$id", userId);
+
+            using var reader = cmd.ExecuteReader();
+            if (reader.Read())
+            {
+                return new User
+                {
+                    Id = reader.GetInt32(0),
+                    Username = reader.GetString(1),
+                    Password = reader.GetString(2),
+                    IQ = reader.GetInt32(3),
+                    CorrectAnswerPercentage = reader.GetFloat(4)
+                };
+            }
+            return null;
         }
 
         public static int InsertQuiz(string title)
