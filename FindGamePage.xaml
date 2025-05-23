@@ -46,6 +46,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
@@ -63,27 +64,56 @@
                        Margin="10,0,0,0"/>
         </StackPanel>
 
-        <!-- Список викторин -->
-        <Border Grid.Row="1"
-                Background="#FFFFFF"
-                CornerRadius="12"
-                Padding="10"
-                Effect="{StaticResource DropShadow}">
-            <ListView x:Name="QuizzesListView"
-                      SelectionMode="Single"
-                      MouseDoubleClick="QuizzesListView_MouseDoubleClick">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="ID"       Width="50"  DisplayMemberBinding="{Binding Id}"/>
-                        <GridViewColumn Header="Название" Width="200" DisplayMemberBinding="{Binding Title}"/>
-                        <GridViewColumn Header="Вопросов" Width="80"  DisplayMemberBinding="{Binding QuestionCount}"/>
-                    </GridView>
-                </ListView.View>
-            </ListView>
-        </Border>
+        <!-- Мои викторины -->
+        <StackPanel Grid.Row="1" Margin="0,0,0,20">
+            <TextBlock Text="Мои викторины"
+                       FontSize="18"
+                       FontWeight="SemiBold"
+                       Margin="0,0,0,10"/>
+            <Border Background="#FFFFFF"
+                    CornerRadius="12"
+                    Padding="10"
+                    Effect="{StaticResource DropShadow}">
+                <ListView x:Name="UserQuizzesListView"
+                          SelectionMode="Single"
+                          MouseDoubleClick="UserQuizzesListView_MouseDoubleClick">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="ID" Width="50" DisplayMemberBinding="{Binding Id}"/>
+                            <GridViewColumn Header="Название" Width="200" DisplayMemberBinding="{Binding Title}"/>
+                            <GridViewColumn Header="Вопросов" Width="80" DisplayMemberBinding="{Binding QuestionCount}"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </Border>
+        </StackPanel>
+
+        <!-- Викторины программы -->
+        <StackPanel Grid.Row="2">
+            <TextBlock Text="Викторины программы"
+                       FontSize="18"
+                       FontWeight="SemiBold"
+                       Margin="0,0,0,10"/>
+            <Border Background="#FFFFFF"
+                    CornerRadius="12"
+                    Padding="10"
+                    Effect="{StaticResource DropShadow}">
+                <ListView x:Name="ProgramQuizzesListView"
+                          SelectionMode="Single"
+                          MouseDoubleClick="ProgramQuizzesListView_MouseDoubleClick">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="ID" Width="50" DisplayMemberBinding="{Binding Id}"/>
+                            <GridViewColumn Header="Название" Width="200" DisplayMemberBinding="{Binding Title}"/>
+                            <GridViewColumn Header="Вопросов" Width="80" DisplayMemberBinding="{Binding QuestionCount}"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </Border>
+        </StackPanel>
 
         <!-- Кнопки Запустить игру и Удалить -->
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
             <Button Style="{StaticResource LargeRoundedButton}"
                     Background="#6A5ACD"
                     Foreground="White"

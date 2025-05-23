@@ -17,18 +17,26 @@ namespace WpfApp14
 
         private void LoadQuizzes()
         {
-            QuizzesListView.ItemsSource = DatabaseService.GetAllQuizzes();
+            UserQuizzesListView.ItemsSource = DatabaseService.GetUserQuizzes();
+            ProgramQuizzesListView.ItemsSource = DatabaseService.GetProgramQuizzes();
         }
 
-        private void QuizzesListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void UserQuizzesListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (QuizzesListView.SelectedItem is QuizInfo quiz)
+            if (UserQuizzesListView.SelectedItem is QuizInfo quiz)
+                NavigateToGame(quiz.Id);
+        }
+
+        private void ProgramQuizzesListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (ProgramQuizzesListView.SelectedItem is QuizInfo quiz)
                 NavigateToGame(quiz.Id);
         }
 
         private void StartGameButton_Click(object sender, RoutedEventArgs e)
         {
-            if (QuizzesListView.SelectedItem is not QuizInfo quiz)
+            QuizInfo? quiz = UserQuizzesListView.SelectedItem as QuizInfo ?? ProgramQuizzesListView.SelectedItem as QuizInfo;
+            if (quiz == null)
             {
                 MessageBox.Show("Пожалуйста, выберите викторину.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
@@ -38,9 +46,9 @@ namespace WpfApp14
 
         private void DeleteQuizButton_Click(object sender, RoutedEventArgs e)
         {
-            if (QuizzesListView.SelectedItem is not QuizInfo quiz)
+            if (UserQuizzesListView.SelectedItem is not QuizInfo quiz)
             {
-                MessageBox.Show("Пожалуйста, выберите викторину для удаления.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Пожалуйста, выберите викторину из 'Мои викторины' для удаления.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -53,8 +61,15 @@ namespace WpfApp14
 
             if (result == MessageBoxResult.Yes)
             {
-                DatabaseService.DeleteQuiz(quiz.Id);
-                LoadQuizzes(); // Обновляем список викторин после удаления
+                try
+                {
+                    DatabaseService.DeleteQuiz(quiz.Id);
+                    LoadQuizzes(); // Обновляем списки викторин после удаления
+                }
+                catch (InvalidOperationException ex)
+                {
+                    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 
