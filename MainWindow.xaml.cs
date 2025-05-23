@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 
 namespace WpfApp14
 {
@@ -7,7 +8,10 @@ namespace WpfApp14
         public MainWindow()
         {
             InitializeComponent();
-            MainFrame.Navigate(new HomePage());
+            if (MainFrame == null)
+            {
+                throw new System.InvalidOperationException("MainFrame not found.");
+            }
         }
     }
 }

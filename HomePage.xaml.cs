@@ -13,8 +13,7 @@ namespace WpfApp14
         public HomePage()
         {
             InitializeComponent();
-            Loaded += HomePage_Loaded; // Subscribe to Loaded event
-            // Subscribe to NavigationService.Navigated event
+            Loaded += HomePage_Loaded;
             if (NavigationService != null)
             {
                 NavigationService.Navigated += NavigationService_Navigated;
@@ -23,31 +22,28 @@ namespace WpfApp14
 
         private void HomePage_Loaded(object sender, RoutedEventArgs e)
         {
-            LoadUserProfile(); // Refresh user profile when page is loaded
+            LoadUserProfile();
         }
 
         private void NavigationService_Navigated(object sender, NavigationEventArgs e)
         {
-            LoadUserProfile(); // Refresh user profile when navigated to
+            LoadUserProfile();
         }
 
         private void LoadUserProfile()
         {
             var user = ((App)Application.Current).CurrentUser;
-            if (user is User profile)
+            if (user is User profile && profile.Id > 0)
             {
                 // Load user from database if ID exists
-                if (profile.Id > 0)
+                var dbUser = DatabaseService.GetUser(profile.Id);
+                if (dbUser != null)
                 {
-                    var dbUser = DatabaseService.GetUser(profile.Id);
-                    if (dbUser != null)
-                    {
-                        profile.Username = dbUser.Username;
-                        profile.Password = dbUser.Password;
-                        profile.IQ = dbUser.IQ;
-                        profile.CorrectAnswerPercentage = dbUser.CorrectAnswerPercentage;
-                        ((App)Application.Current).CurrentUser = dbUser; // Update CurrentUser to ensure consistency
-                    }
+                    profile.Username = dbUser.Username;
+                    profile.Password = dbUser.Password;
+                    profile.IQ = dbUser.IQ;
+                    profile.CorrectAnswerPercentage = dbUser.CorrectAnswerPercentage;
+                    ((App)Application.Current).CurrentUser = dbUser;
                 }
                 ProfileUsernameTextBlock.Text = string.IsNullOrEmpty(profile.Username) ? "Гость" : profile.Username;
                 ProfileIQTextBlock.Text = profile.IQ.ToString();
@@ -58,6 +54,8 @@ namespace WpfApp14
                 ProfileUsernameTextBlock.Text = "Гость";
                 ProfileIQTextBlock.Text = "0";
                 ProfileCorrectAnswersTextBlock.Text = "0%";
+                // Redirect to LoginPage if no user is logged in
+                NavigationService?.Navigate(new LoginPage());
             }
         }
 
@@ -84,6 +82,13 @@ namespace WpfApp14
         private void ProfileBorder_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             NavigationService?.Navigate(new ProfilePage());
+        }
+
+        private void LogoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Clear CurrentUser and navigate to LoginPage
+            ((App)Application.Current).CurrentUser = null;
+            NavigationService?.Navigate(new LoginPage());
         }
     }
 }

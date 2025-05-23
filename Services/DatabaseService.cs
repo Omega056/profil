@@ -129,40 +129,47 @@ namespace WpfApp14.Services
 
         public static int InsertOrUpdateUser(User user)
         {
-            if (_connection == null) throw new InvalidOperationException("DB not initialized");
-
-            using var tx = _connection.BeginTransaction();
-            using var cmd = _connection.CreateCommand();
-            cmd.Transaction = tx;
-
-            if (user.Id == 0) // New user
+            try
             {
-                cmd.CommandText = @"INSERT INTO Users (Username, Password, IQ, CorrectAnswerPercentage)
-                    VALUES ($username, $password, $iq, $percentage);";
-                cmd.Parameters.AddWithValue("$username", user.Username);
-                cmd.Parameters.AddWithValue("$password", user.Password ?? string.Empty);
-                cmd.Parameters.AddWithValue("$iq", user.IQ);
-                cmd.Parameters.AddWithValue("$percentage", user.CorrectAnswerPercentage);
-                cmd.ExecuteNonQuery();
+                if (_connection == null) throw new InvalidOperationException("DB not initialized");
 
-                cmd.CommandText = "SELECT last_insert_rowid();";
-                user.Id = (int)(long)cmd.ExecuteScalar()!;
+                using var tx = _connection.BeginTransaction();
+                using var cmd = _connection.CreateCommand();
+                cmd.Transaction = tx;
+
+                if (user.Id == 0)
+                {
+                    cmd.CommandText = @"INSERT INTO Users (Username, Password, IQ, CorrectAnswerPercentage)
+                        VALUES ($username, $password, $iq, $percentage);";
+                    cmd.Parameters.AddWithValue("$username", user.Username);
+                    cmd.Parameters.AddWithValue("$password", user.Password ?? string.Empty);
+                    cmd.Parameters.AddWithValue("$iq", user.IQ);
+                    cmd.Parameters.AddWithValue("$percentage", user.CorrectAnswerPercentage);
+                    cmd.ExecuteNonQuery();
+
+                    cmd.CommandText = "SELECT last_insert_rowid();";
+                    user.Id = (int)(long)cmd.ExecuteScalar()!;
+                }
+                else
+                {
+                    cmd.CommandText = @"UPDATE Users
+                        SET Username = $username, Password = $password, IQ = $iq, CorrectAnswerPercentage = $percentage
+                        WHERE Id = $id;";
+                    cmd.Parameters.AddWithValue("$id", user.Id);
+                    cmd.Parameters.AddWithValue("$username", user.Username);
+                    cmd.Parameters.AddWithValue("$password", user.Password ?? string.Empty);
+                    cmd.Parameters.AddWithValue("$iq", user.IQ);
+                    cmd.Parameters.AddWithValue("$percentage", user.CorrectAnswerPercentage);
+                    cmd.ExecuteNonQuery();
+                }
+
+                tx.Commit();
+                return user.Id;
             }
-            else // Update existing user
+            catch (SqliteException ex)
             {
-                cmd.CommandText = @"UPDATE Users
-                    SET Username = $username, Password = $password, IQ = $iq, CorrectAnswerPercentage = $percentage
-                    WHERE Id = $id;";
-                cmd.Parameters.AddWithValue("$id", user.Id);
-                cmd.Parameters.AddWithValue("$username", user.Username);
-                cmd.Parameters.AddWithValue("$password", user.Password ?? string.Empty);
-                cmd.Parameters.AddWithValue("$iq", user.IQ);
-                cmd.Parameters.AddWithValue("$percentage", user.CorrectAnswerPercentage); // Fixed typo
-                cmd.ExecuteNonQuery();
+                throw new InvalidOperationException($"Failed to insert or update user: {ex.Message}", ex);
             }
-
-            tx.Commit();
-            return user.Id;
         }
 
         public static User? GetUser(int userId)
@@ -172,6 +179,29 @@ namespace WpfApp14.Services
             using var cmd = _connection.CreateCommand();
             cmd.CommandText = "SELECT Id, Username, Password, IQ, CorrectAnswerPercentage FROM Users WHERE Id = $id;";
             cmd.Parameters.AddWithValue("$id", userId);
+
+            using var reader = cmd.ExecuteReader();
+            if (reader.Read())
+            {
+                return new User
+                {
+                    Id = reader.GetInt32(0),
+                    Username = reader.GetString(1),
+                    Password = reader.GetString(2),
+                    IQ = reader.GetInt32(3),
+                    CorrectAnswerPercentage = reader.GetFloat(4)
+                };
+            }
+            return null;
+        }
+
+        public static User? GetUserByUsername(string username)
+        {
+            if (_connection == null) throw new InvalidOperationException("DB not initialized");
+
+            using var cmd = _connection.CreateCommand();
+            cmd.CommandText = "SELECT Id, Username, Password, IQ, CorrectAnswerPercentage FROM Users WHERE Username = $username;";
+            cmd.Parameters.AddWithValue("$username", username);
 
             using var reader = cmd.ExecuteReader();
             if (reader.Read())
@@ -734,4 +764,4 @@ namespace WpfApp14.Services
             public bool IsCorrect { get; set; }
         }
     }
-}   
+}
