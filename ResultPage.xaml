@@ -1,0 +1,16 @@
+<Page x:Class="WpfApp14.ResultPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="ResultPage">
+    <Grid>
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TextBlock x:Name="CorrectCountText"
+                 FontSize="24"
+                 FontWeight="SemiBold"/>
+            <TextBlock x:Name="IncorrectCountText"
+                 FontSize="24"
+                 FontWeight="SemiBold"/>
+            <Button Content="На главную" Click="Home_Click" Width="150" Margin="0,20,0,0"/>
+        </StackPanel>
+    </Grid>
+</Page>

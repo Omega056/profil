@@ -1,0 +1,26 @@
+<Page x:Class="WpfApp14.GamePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="GamePage">
+    <Grid Margin="20">
+        <TextBlock x:Name="QuestionTextBlock"
+                   FontSize="24"
+                   TextWrapping="Wrap"
+                   Margin="0,0,0,100" />
+
+        <!-- Ответы -->
+        <StackPanel VerticalAlignment="Center">
+            <Button x:Name="AnswerButton1" Click="OnAnswer_Click" Height="40" Margin="0,5" />
+            <Button x:Name="AnswerButton2" Click="OnAnswer_Click" Height="40" Margin="0,5" />
+            <Button x:Name="AnswerButton3" Click="OnAnswer_Click" Height="40" Margin="0,5" />
+            <Button x:Name="AnswerButton4" Click="OnAnswer_Click" Height="40" Margin="0,5" />
+        </StackPanel>
+
+        <!-- Таймер и выход -->
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center">
+            <TextBlock Text="Time left:" FontSize="18" Margin="0,0,5,0" />
+            <TextBlock x:Name="TimerTextBlock" FontSize="18" />
+            <Button Content="Quit" Click="OnQuit_Click" Margin="20,0,0,0" />
+        </StackPanel>
+    </Grid>
+</Page>

@@ -1,0 +1,115 @@
+﻿<Page x:Class="WpfApp14.CreateGamePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="clr-namespace:WpfApp14.UIModels"
+      Title="Создать игру" Background="#F5EDE4">
+
+    <Page.Resources>
+        <!-- Стили для кнопок -->
+        <Style TargetType="Button" x:Key="RoundedButton">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#CCCCCC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="Button" x:Key="LargeRoundedButton" BasedOn="{StaticResource RoundedButton}">
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="FontSize" Value="16"/>
+        </Style>
+    </Page.Resources>
+
+    <DockPanel Margin="20">
+        <!-- Кнопка Назад -->
+        <Button Content="← Назад"
+                Style="{StaticResource RoundedButton}"
+                DockPanel.Dock="Top"
+                Width="80"
+                Click="BackButton_Click"
+                Margin="0,0,0,10"/>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <!-- Название викторины -->
+                <TextBlock Text="Название викторины:" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                <TextBox x:Name="QuizTitleBox" Height="30" Margin="0,0,0,20"/>
+
+                <!-- Количество вопросов -->
+                <TextBlock Text="Количество вопросов:" Margin="0,0,0,5"/>
+                <ComboBox x:Name="QuestionsCountCombo" Width="60" SelectedIndex="4"
+                          SelectionChanged="QuestionsCountCombo_SelectionChanged" Margin="0,0,0,20">
+                    <ComboBoxItem>1</ComboBoxItem>
+                    <ComboBoxItem>2</ComboBoxItem>
+                    <ComboBoxItem>3</ComboBoxItem>
+                    <ComboBoxItem>4</ComboBoxItem>
+                    <ComboBoxItem>5</ComboBoxItem>
+                    <ComboBoxItem>6</ComboBoxItem>
+                    <ComboBoxItem>7</ComboBoxItem>
+                    <ComboBoxItem>8</ComboBoxItem>
+                    <ComboBoxItem>9</ComboBoxItem>
+                    <ComboBoxItem>10</ComboBoxItem>
+                    <ComboBoxItem>11</ComboBoxItem>
+                    <ComboBoxItem>12</ComboBoxItem>
+                    <ComboBoxItem>13</ComboBoxItem>
+                    <ComboBoxItem>14</ComboBoxItem>
+                    <ComboBoxItem>15</ComboBoxItem>
+                </ComboBox>
+
+                <!-- Вопросы -->
+                <ItemsControl x:Name="QuestionsItemsControl" ItemsSource="{Binding Questions}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="White" CornerRadius="8" Padding="15" Margin="0,0,0,20">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding QuestionHeader}" FontWeight="SemiBold" FontSize="16"/>
+                                    <TextBox Text="{Binding QuestionText, UpdateSourceTrigger=PropertyChanged}" Margin="0,5"/>
+
+                                    <!-- Ответы -->
+                                    <ItemsControl ItemsSource="{Binding Answers}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                                    <RadioButton IsChecked="{Binding IsCorrect}" GroupName="{Binding GroupName}" Margin="0,0,5,0"/>
+                                                    <TextBox Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}" Width="300"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+
+                                    <!-- Таймер -->
+                                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                                        <TextBlock Text="Таймер:" Width="60"/>
+                                        <ComboBox SelectedIndex="{Binding SelectedTimerIndex}" Width="100">
+                                            <ComboBoxItem>10 сек</ComboBoxItem>
+                                            <ComboBoxItem>20 сек</ComboBoxItem>
+                                            <ComboBoxItem>30 сек</ComboBoxItem>
+                                        </ComboBox>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <!-- Сохранить викторину -->
+                <Button Content="Добавить викторину"
+                        Style="{StaticResource LargeRoundedButton}"
+                        Background="#F0C36A" Foreground="White"
+                        Click="AddQuizButton_Click"
+                        HorizontalAlignment="Center"/>
+            </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
+</Page>
