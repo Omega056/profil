@@ -5,8 +5,8 @@
     <!-- Фон с градиентом -->
     <Page.Background>
         <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-            <GradientStop Color="#DCEFFF" Offset="0"/>
-            <GradientStop Color="#F5F8FF" Offset="1"/>
+            <GradientStop Color="#D2B48C" Offset="0"/>
+            <GradientStop Color="#E0CDA5" Offset="1"/>
         </LinearGradientBrush>
     </Page.Background>
 
@@ -16,10 +16,11 @@
 
         <!-- Базовый стиль кнопки -->
         <Style TargetType="Button" x:Key="RoundedButton">
-            <Setter Property="Background" Value="#FFFFFF"/>
+            <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderBrush" Value="#DDDDDD"/>
-            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Foreground" Value="#333333"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -27,7 +28,7 @@
                         <Border Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="10"
+                                CornerRadius="20"
                                 Padding="{TemplateBinding Padding}"
                                 Effect="{StaticResource DropShadow}">
                             <ContentPresenter HorizontalAlignment="Center"
@@ -37,11 +38,104 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
         <!-- Большая кнопка на основе RoundedButton -->
         <Style TargetType="Button" x:Key="LargeRoundedButton" BasedOn="{StaticResource RoundedButton}">
             <Setter Property="Height" Value="50"/>
             <Setter Property="FontSize" Value="16"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <!-- Стиль для ComboBox, стилизованный как кнопка -->
+        <Style TargetType="ComboBox" x:Key="ButtonStyledComboBox">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="#DDDDDD"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="20"
+                                Effect="{StaticResource DropShadow}">
+                            <Grid>
+                                <ToggleButton x:Name="ToggleButton"
+                                            IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                            Background="Transparent"
+                                            BorderBrush="Transparent"
+                                            BorderThickness="0"/>
+                                <ContentPresenter x:Name="ContentSite"
+                                                IsHitTestVisible="False"
+                                                Content="{TemplateBinding SelectionBoxItem}"
+                                                ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                                ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                                Margin="10,5"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Left"/>
+                                <TextBox x:Name="PART_EditableTextBox"
+                                        Visibility="Hidden"
+                                        IsReadOnly="{TemplateBinding IsReadOnly}"/>
+                                <Popup x:Name="PART_Popup"
+                                    IsOpen="{TemplateBinding IsDropDownOpen}"
+                                    Placement="Bottom"
+                                    AllowsTransparency="True"
+                                    Focusable="False"
+                                    PopupAnimation="Slide">
+                                    <Grid MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                        MinWidth="{TemplateBinding ActualWidth}"
+                                        Background="Transparent">
+                                        <Border x:Name="DropDownBorder"
+                                                Background="Transparent"
+                                                BorderBrush="#DDDDDD"
+                                                BorderThickness="2"
+                                                CornerRadius="5"/>
+                                        <ScrollViewer Margin="4,6,4,6"
+                                                    Background="Transparent">
+                                            <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                        </ScrollViewer>
+                                    </Grid>
+                                </Popup>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Стиль для ToggleButton -->
+        <Style TargetType="ToggleButton" x:Key="StyledToggleButton">
+            <Setter Property="Background" Value="#C5C5C5"/>
+            <Setter Property="BorderBrush" Value="#DDDDDD"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="12">
+                            <Grid>
+                                <Ellipse x:Name="Circle"
+                                         Width="20"
+                                         Height="20"
+                                         Fill="White"
+                                         HorizontalAlignment="Left"
+                                         Margin="2"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Circle" Property="HorizontalAlignment" Value="Right"/>
+                                <Setter Property="Background" Value="#6A5ACD"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </Page.Resources>
 
@@ -76,7 +170,7 @@
         <!-- Основной контент -->
         <StackPanel Grid.Row="1" VerticalAlignment="Top">
             <!-- Настройки звука -->
-            <Border Background="#FFFFFF" CornerRadius="12" Padding="15" Effect="{StaticResource DropShadow}" Margin="0,0,0,20">
+            <Border Background="#D2B48C" CornerRadius="12" Padding="15" Effect="{StaticResource DropShadow}" Margin="0,0,0,20">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -87,7 +181,7 @@
                                   Grid.Column="1"
                                   Width="50"
                                   Height="25"
-                                  Background="#C5C5C5"
+                                  Style="{StaticResource StyledToggleButton}"
                                   VerticalAlignment="Center"
                                   Margin="10,0,0,0"/>
                 </Grid>
@@ -96,25 +190,26 @@
             <!-- Кнопка Профиль -->
             <Button Content="Профиль"
                     Style="{StaticResource LargeRoundedButton}"
-                    Background="#6A5ACD"
+                    Background="#FF6F1C1C"
                     Foreground="White"
                     Click="ProfileButton_Click"
-                    Margin="0,0,0,20"/>
+                    Margin="0,0,0,20" BorderBrush="Black"/>
 
             <!-- Кнопка Поддержка -->
             <Button Content="Поддержка"
                     Style="{StaticResource LargeRoundedButton}"
-                    Background="#20C997"
+                    Background="#FF003324"
                     Foreground="White"
                     Click="SupportButton_Click"
-                    Margin="0,0,0,20"/>
+                    Margin="0,0,0,20" BorderBrush="Black"/>
 
             <!-- Выбор темы -->
-            <Border Background="#FFFFFF" CornerRadius="12" Padding="15" Effect="{StaticResource DropShadow}">
+            <Border Background="#D2B48C" CornerRadius="12" Padding="15" Effect="{StaticResource DropShadow}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="117.618"/>
+                        <ColumnDefinition Width="12.382"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="Тема" FontSize="16" VerticalAlignment="Center" Foreground="#333333"/>
                     <ComboBox x:Name="ThemeSelector"
@@ -122,7 +217,8 @@
                               Width="120"
                               Height="30"
                               VerticalAlignment="Center"
-                              Margin="10,0,0,0">
+                              Margin="10,0,0,0"
+                              Style="{StaticResource ButtonStyledComboBox}" Grid.ColumnSpan="2" BorderBrush="#FF1B0000">
                         <ComboBoxItem Content="Светлая"/>
                         <ComboBoxItem Content="Тёмная"/>
                     </ComboBox>

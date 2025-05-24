@@ -4,18 +4,22 @@
       Title="Профиль">
     <Page.Background>
         <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-            <GradientStop Color="#DCEFFF" Offset="0"/>
-            <GradientStop Color="#F5F8FF" Offset="1"/>
+            <GradientStop Color="#D2B48C" Offset="0"/>
+            <GradientStop Color="#E0CDA5" Offset="1"/>
         </LinearGradientBrush>
     </Page.Background>
 
     <Page.Resources>
+        <!-- Тень -->
+        <DropShadowEffect x:Key="DropShadow" ShadowDepth="4" BlurRadius="10" Color="#888888" Opacity="0.5"/>
+
         <!-- Стили кнопок -->
         <Style TargetType="Button" x:Key="RoundedButton">
-            <Setter Property="Background" Value="#FFFFFF"/>
+            <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderBrush" Value="#DDDDDD"/>
-            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Foreground" Value="#333333"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -23,8 +27,9 @@
                         <Border Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="10"
-                                Padding="{TemplateBinding Padding}">
+                                CornerRadius="20"
+                                Padding="{TemplateBinding Padding}"
+                                Effect="{StaticResource DropShadow}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                     </ControlTemplate>
@@ -40,8 +45,8 @@
 
         <!-- Стиль для TextBox -->
         <Style TargetType="TextBox" x:Key="RoundedTextBox">
-            <Setter Property="Background" Value="#FFFFFF"/>
-            <Setter Property="BorderBrush" Value="#DDDDDD"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="#FF0000"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="10,5"/>
             <Setter Property="FontSize" Value="14"/>
@@ -59,12 +64,9 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
-        <!-- Тень -->
-        <DropShadowEffect x:Key="DropShadow" ShadowDepth="2" BlurRadius="8" Color="#888888"/>
     </Page.Resources>
 
-    <Grid Margin="20">
+    <Grid Margin="30">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -72,51 +74,58 @@
         </Grid.RowDefinitions>
 
         <!-- Заголовок + Назад -->
-        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,20">
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,30">
             <Button Style="{StaticResource RoundedButton}"
                     Width="40" Height="40"
                     Click="BackButton_Click">
                 <TextBlock Text="←" FontSize="20"/>
             </Button>
             <TextBlock Text="Профиль"
-                       FontSize="20"
+                       FontSize="24"
                        FontWeight="Bold"
                        VerticalAlignment="Center"
-                       Margin="10,0,0,0"/>
+                       Margin="15,0,0,0"
+                       Foreground="#333333"/>
         </StackPanel>
 
         <!-- Информация о профиле -->
         <StackPanel Grid.Row="1" VerticalAlignment="Center">
-            <Border CornerRadius="15" Background="#FFFFFF" Padding="15" Margin="0,0,0,20">
+            <Border CornerRadius="20" Padding="20" Margin="0,0,0,30" Effect="{StaticResource DropShadow}" Opacity="0.9">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#D2B48C" Offset="0"/>
+                        <GradientStop Color="#C9A674" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
                 <StackPanel>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Ellipse Width="80" Height="80" Fill="#C0C0C0"/>
-                        <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
-                            <TextBlock x:Name="UsernameTextBlock" Text="Студент" FontWeight="Bold" FontSize="18" Foreground="#222222"/>
-                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                                <TextBlock Text="IQ: " FontWeight="SemiBold" Foreground="#555"/>
-                                <TextBlock x:Name="IQTextBlock" Text="100" Foreground="#555"/>
+                        <Ellipse Width="90" Height="90" Fill="#C0C0C0" Margin="0,0,20,0"/>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock x:Name="UsernameTextBlock" Text="Студент" FontWeight="Bold" FontSize="20" Foreground="#222222"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                <TextBlock Text="IQ: " FontWeight="SemiBold" FontSize="16" Foreground="#555"/>
+                                <TextBlock x:Name="IQTextBlock" Text="100" FontSize="16" Foreground="#555"/>
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
-                                <TextBlock Text="Правильных ответов: " FontWeight="SemiBold" Foreground="#555"/>
-                                <TextBlock x:Name="CorrectAnswersTextBlock" Text="0%" Foreground="#555"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                <TextBlock Text="Правильных ответов: " FontWeight="SemiBold" FontSize="16" Foreground="#555"/>
+                                <TextBlock x:Name="CorrectAnswersTextBlock" Text="0%" FontSize="16" Foreground="#555"/>
                             </StackPanel>
                         </StackPanel>
                     </Grid>
                     <TextBox x:Name="UsernameTextBox"
                              Style="{StaticResource RoundedTextBox}"
-                             Margin="0,10,0,0"
+                             Margin="0,15,0,0"
                              Visibility="Collapsed"/>
                     <Button x:Name="EditUsernameButton"
                             Style="{StaticResource LargeRoundedButton}"
-                            Background="#6A5ACD"
+                            Background="#FF481416"
                             Foreground="White"
                             Content="Изменить имя"
-                            Margin="0,10,0,0"
+                            Margin="0,15,0,0"
                             Click="EditUsernameButton_Click"/>
                 </StackPanel>
             </Border>
@@ -125,9 +134,12 @@
         <!-- Кнопка выхода -->
         <Button Grid.Row="2"
                 Style="{StaticResource LargeRoundedButton}"
-                Background="#FF4444"
                 Foreground="White"
                 Content="Выйти"
-                Click="LogoutButton_Click"/>
+                Click="LogoutButton_Click" BorderBrush="Black">
+            <Button.Background>
+                <ImageBrush/>
+            </Button.Background>
+        </Button>
     </Grid>
 </Page>

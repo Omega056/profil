@@ -3,13 +3,16 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       Title="Главная">
     <Page.Background>
-        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#FF99A8" Offset="0"/>
-            <GradientStop Color="#FFC1CC" Offset="1"/>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#D2B48C" Offset="0"/>
+            <GradientStop Color="#E0CDA5" Offset="1"/>
         </LinearGradientBrush>
     </Page.Background>
 
     <Page.Resources>
+        <!-- Тень для кнопок и карточек -->
+        <DropShadowEffect x:Key="DropShadow" ShadowDepth="4" BlurRadius="12" Color="#888888" Opacity="0.6"/>
+
         <!-- Стили кнопок -->
         <Style TargetType="Button" x:Key="RoundedButton">
             <Setter Property="Background" Value="Transparent"/>
@@ -24,11 +27,31 @@
                         <Border Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="20"
-                                Effect="{DynamicResource ButtonShadow}">
+                                CornerRadius="25"
+                                Effect="{StaticResource DropShadow}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX"
+                                                        To="1.05" Duration="0:0:0.2"/>
+                                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY"
+                                                        To="1.05" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX"
+                                                        To="1" Duration="0:0:0.2"/>
+                                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY"
+                                                        To="1" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
                             <EventTrigger RoutedEvent="MouseDown">
                                 <BeginStoryboard>
                                     <Storyboard>
@@ -51,83 +74,92 @@
         </Style>
 
         <Style TargetType="Button" x:Key="LargeRoundedButton" BasedOn="{StaticResource RoundedButton}">
-            <Setter Property="Height" Value="55"/>
+            <Setter Property="Height" Value="60"/>
             <Setter Property="FontSize" Value="18"/>
             <Setter Property="FontWeight" Value="Bold"/>
         </Style>
-
-        <!-- Тень для кнопок -->
-        <DropShadowEffect x:Key="ButtonShadow" ShadowDepth="4" BlurRadius="10" Color="#888888" Opacity="0.5"/>
 
         <!-- Эффект стекла для других элементов -->
         <BlurEffect x:Key="GlassEffect" Radius="12" KernelType="Gaussian"/>
     </Page.Resources>
 
-    <Grid Margin="30">
+    <Grid Margin="40">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- Верхняя панель -->
-        <Grid Grid.Row="0" VerticalAlignment="Top">
+        <Grid Grid.Row="0" VerticalAlignment="Top" Margin="0,20,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0" Background="Transparent" BorderThickness="0" Click="SettingsButton_Click">
-                <Image Source="/1486395874-settings_80622.png" Width="35" Height="35"/>
+                <Image Source="/1486395874-settings_80622.png" Width="40" Height="40"/>
             </Button>
-            <TextBlock Grid.Column="1"/>
+            <TextBlock Grid.Column="1" Text="Главная" FontSize="28" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#333333"/>
             <Button Grid.Column="2" Background="Transparent" BorderThickness="0" Click="StoreButton_Click">
-                <Image Source="/3986728-online-shop-store-store-icon_112980.png" Width="35" Height="35"/>
+                <Image Source="/3986728-online-shop-store-store-icon_112980.png" Width="40" Height="40"/>
             </Button>
         </Grid>
 
         <!-- Профиль + ежедневное испытание -->
-        <StackPanel Grid.Row="1" Margin="0,30,0,30">
-            <Border x:Name="ProfileBorder" CornerRadius="25" Background="White" Padding="20" Margin="0,0,0,25" Opacity="0.85" MouseLeftButtonDown="ProfileBorder_MouseLeftButtonDown" Cursor="Hand">
+        <StackPanel Grid.Row="1" VerticalAlignment="Center">
+            <Border x:Name="ProfileBorder" CornerRadius="25" Padding="25" Margin="0,0,0,20" MouseLeftButtonDown="ProfileBorder_MouseLeftButtonDown" Cursor="Hand" Effect="{StaticResource DropShadow}" Opacity="0.9">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#D2B48C" Offset="0"/>
+                        <GradientStop Color="#C9A674" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Ellipse Width="70" Height="70" Fill="#FFC1CC"/>
-                    <StackPanel Grid.Column="1" Margin="15,0,0,0">
-                        <TextBlock x:Name="ProfileUsernameTextBlock" Text="Студент" FontWeight="Bold" FontSize="18" Foreground="#333333"/>
-                        <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                            <TextBlock Text="IQ: " FontWeight="SemiBold" FontSize="14" Foreground="#666"/>
-                            <TextBlock x:Name="ProfileIQTextBlock" Text="100" FontSize="14" Foreground="#666"/>
+                    <Ellipse Width="80" Height="80" Fill="#FFC1CC"/>
+                    <StackPanel Grid.Column="1" Margin="20,0,0,0" VerticalAlignment="Center">
+                        <TextBlock x:Name="ProfileUsernameTextBlock" Text="Студент" FontWeight="Bold" FontSize="20" Foreground="#222222"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                            <TextBlock Text="IQ: " FontWeight="SemiBold" FontSize="16" Foreground="#555"/>
+                            <TextBlock x:Name="ProfileIQTextBlock" Text="100" FontSize="16" Foreground="#555"/>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
-                            <TextBlock Text="Правильных ответов: " FontWeight="SemiBold" FontSize="14" Foreground="#666"/>
-                            <TextBlock x:Name="ProfileCorrectAnswersTextBlock" Text="0%" FontSize="14" Foreground="#666"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                            <TextBlock Text="Правильных ответов: " FontWeight="SemiBold" FontSize="16" Foreground="#555"/>
+                            <TextBlock x:Name="ProfileCorrectAnswersTextBlock" Text="0%" FontSize="16" Foreground="#555"/>
                         </StackPanel>
                     </StackPanel>
                 </Grid>
             </Border>
-            <Border CornerRadius="25" Background="White" Padding="20" Opacity="0.85">
+            <Border CornerRadius="25" Padding="25" Margin="0,20,0,0" Effect="{StaticResource DropShadow}" Opacity="0.9">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#D2B48C" Offset="0"/>
+                        <GradientStop Color="#C9A674" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
                 <StackPanel>
-                    <TextBlock Text="Ежедневное испытание" FontWeight="Bold" FontSize="16" Foreground="#333"/>
-                    <TextBlock Text="Дойти до: $2,000" FontSize="14" Foreground="#888" Margin="0,8,0,0"/>
+                    <TextBlock Text="Ежедневное испытание" FontWeight="Bold" FontSize="18" Foreground="#333"/>
+                    <TextBlock Text="Дойти до: $2,000" FontSize="16" Foreground="#888" Margin="0,12,0,0"/>
                 </StackPanel>
             </Border>
         </StackPanel>
 
         <!-- Нижние кнопки -->
-        <StackPanel Grid.Row="2" VerticalAlignment="Bottom">
+        <StackPanel Grid.Row="2" VerticalAlignment="Bottom" Margin="0,0,0,30">
             <Button x:Name="CreateGameButton"
                     Content="Создать игру"
                     Style="{StaticResource LargeRoundedButton}"
                     Click="CreateGameButton_Click"
-                    Margin="0,0,0,15"/>
+                    Margin="0,0,0,20"/>
             <Button x:Name="FindGameButton"
                     Content="Найти игру"
                     Style="{StaticResource LargeRoundedButton}"
                     Click="FindGameButton_Click"
-                    Margin="0,0,0,15"/>
+                    Margin="0,0,0,20"/>
             <Button x:Name="LogoutButton"
                     Content="Выйти"
                     Style="{StaticResource LargeRoundedButton}"
