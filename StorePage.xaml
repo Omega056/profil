@@ -38,11 +38,19 @@
             </Setter>
         </Style>
 
-        <!-- Увеличенный стиль кнопки для ключевых действий -->
+        <!-- Увеличенный стиль кнопки для ключевых действий с триггерами для подсказок -->
         <Style TargetType="Button" x:Key="LargeRoundedButton" BasedOn="{StaticResource RoundedButton}">
             <Setter Property="Height" Value="40"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Price}" Value="500 тг">
+                    <Setter Property="ToolTip" Value="500 тг"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Price}" Value="1000 тг">
+                    <Setter Property="ToolTip" Value="50% убранных вопросов 1000 тг"/>
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
 
         <!-- Стили текста товаров -->

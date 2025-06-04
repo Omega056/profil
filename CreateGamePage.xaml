@@ -81,6 +81,14 @@
             </Setter>
         </Style>
 
+        <!-- Новый стиль для миниатюрных кнопок -->
+        <Style TargetType="Button" x:Key="MiniRoundedButton" BasedOn="{StaticResource RoundedButton}">
+            <Setter Property="Width" Value="50"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Padding" Value="6,3"/>
+        </Style>
+
         <Style TargetType="Button" x:Key="LargeRoundedButton" BasedOn="{StaticResource RoundedButton}">
             <Setter Property="Height" Value="45"/>
             <Setter Property="FontSize" Value="16"/>
@@ -252,8 +260,7 @@
                                 Click="BackButton_Click"
                                 Margin="0,0,10,0"/>
                         <Button Content="Помощь ИИ"
-                                Style="{StaticResource RoundedButton}"
-                                Width="80"
+                                Style="{StaticResource MiniRoundedButton}"
                                 Click="ToggleAIChatButton_Click"
                                 Margin="0,0,10,0"/>
                         <Button Content="Добавить викторину"
@@ -295,7 +302,7 @@
                 </ListView>
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Margin="10">
                     <TextBox x:Name="ChatInputBox" Width="180" Style="{StaticResource RoundedTransparentTextBox}" Margin="0,0,8,0"/>
-                    <Button Content="Отправить" Style="{StaticResource RoundedButton}" Width="60" Click="SendMessageButton_Click"/>
+                    <Button Content="Отправить" Style="{StaticResource MiniRoundedButton}" Click="SendMessageButton_Click"/>
                 </StackPanel>
             </DockPanel>
         </Border>
